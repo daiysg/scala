@@ -25,8 +25,8 @@ object Lists {
     */
   def sum(xs: List[Int]): Int = {
     xs match {
-      case x :: tail => x + sum(tail) // if there is an element, add it to the sum of the tail
       case Nil => 0 // if there are no elements, then the sum is 0
+      case x :: tail => x + sum(tail) // if there is an element, add it to the sum of the tail
     }
   }
 
@@ -49,7 +49,7 @@ object Lists {
     }
 
     val initialValue = xs.head;
-    xs.foldLeft(initialValue) { (result, x) =>
+    xs.foldRight(initialValue) { (x, result) =>
       math.max(result, x)
     }
   }
