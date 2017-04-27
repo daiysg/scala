@@ -87,7 +87,7 @@ object Huffman {
     pack(sortChars) map (xs => (xs.head, xs.length))
   }
 
-  def mergeSort(list:List[Int]):List[Int] = list match {
+  def mergeSort(list: List[Int]): List[Int] = list match {
     case Nil => List()
     case _ => {
       val n = list.length / 2
@@ -96,7 +96,7 @@ object Huffman {
     }
   }
 
-  def merge(left:List[Int], right:List[Int]):List[Int] = (left, right) match {
+  def merge(left: List[Int], right: List[Int]): List[Int] = (left, right) match {
     case (Nil, _) => right
     case (_, Nil) => left
     case (ltHead :: ltTail, rtHead :: rtTail) => {
@@ -115,8 +115,8 @@ object Huffman {
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs match {
     case Nil => List()
     case _ =>
-      val freqPairs = freqs sortWith((e1, e2) => e1._2 < e2._2)
-      freqPairs map(e1 => Leaf(e1._1, e1._2))
+      val freqPairs = freqs sortWith ((e1, e2) => e1._2 < e2._2)
+      freqPairs map (e1 => Leaf(e1._1, e1._2))
   }
 
   /**
@@ -139,7 +139,7 @@ object Huffman {
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
     case Nil => List()
     case List(tree) => List(tree)
-    case left :: right :: remaining => (makeCodeTree(left, right) :: remaining) .sortWith((t1, t2) => weight(t1) < weight(t2))
+    case left :: right :: remaining => (makeCodeTree(left, right) :: remaining).sortWith((t1, t2) => weight(t1) < weight(t2))
   }
 
   /**
@@ -159,7 +159,10 @@ object Huffman {
     * the example invocation. Also define the return type of the `until` function.
     *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
     */
-  def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  def until(p: List[CodeTree] => Boolean, f: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = {
+    if (p(trees)) trees
+    else until(p, f)(f(trees))
+  }
 
   /**
     * This function creates a code tree which is optimal to encode the text `chars`.
@@ -167,7 +170,7 @@ object Huffman {
     * The parameter `chars` is an arbitrary text. This function extracts the character
     * frequencies from that text and creates a code tree based on them.
     */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree = until(singleton, combine)( makeOrderedLeafList(times(chars)) ).head
 
 
   // Part 3: Decoding
@@ -196,7 +199,7 @@ object Huffman {
   /**
     * Write a function that returns the decoded secret
     */
-  def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode, secret)
 
 
   // Part 4a: Encoding using Huffman tree

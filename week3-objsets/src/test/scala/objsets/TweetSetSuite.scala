@@ -29,19 +29,19 @@ class TweetSetSuite extends FunSuite {
 
   test("filter: on empty set") {
     new TestSets {
-      assert(size(set1.filter(x => x.user == "a")) === 0)
+      assert(size(set1.filter(tw => tw.user == "a")) === 0)
     }
   }
 
   test("filter: a on set5") {
     new TestSets {
-      assert(size(set5.filter(tw => tw.user == "a")) === 0)
+      assert(size(set5.filter(tw => tw.user == "a")) === 1)
     }
   }
 
   test("filter: 20 on set5") {
     new TestSets {
-      assert(size(set5.filter(tw => tw.retweets == 20)) === 0)
+      assert(size(set5.filter(tw => tw.retweets == 20)) === 2)
     }
   }
 
@@ -71,4 +71,4 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
-  }
+}
