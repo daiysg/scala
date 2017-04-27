@@ -29,12 +29,12 @@ object Huffman {
   def weight(tree: CodeTree): Int = tree match {
     case Fork(left, right, chars, weight) => weight
     case Leaf(char, weight) => weight;
-  }// tree match ...
+  } // tree match ...
 
   def chars(tree: CodeTree): List[Char] = tree match {
     case Fork(left, right, chars, weight) => chars
     case Leaf(char, weight) => List(char)
-  }// tree match ...
+  } // tree match ...
 
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -76,7 +76,34 @@ object Huffman {
     * println("integer is  : "+ theInt)
     * }
     */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+  def times(chars: List[Char]): List[(Char, Int)] = {
+    def pack(xs: List[Char]): List[List[Char]] = xs match {
+      case Nil => List()
+      case head :: tail =>
+        val (first, remaining) = xs span (_ == head)
+        first :: pack(remaining)
+    }
+    val sortChars = chars.sortWith((x, y) => x < y)
+    pack(sortChars) map (xs => (xs.head, xs.length))
+  }
+
+  def mergeSort(list:List[Int]):List[Int] = list match {
+    case Nil => List()
+    case _ => {
+      val n = list.length / 2
+      val (left, right) = list.splitAt(n)
+      merge(mergeSort(left), mergeSort(right))
+    }
+  }
+
+  def merge(left:List[Int], right:List[Int]):List[Int] = (left, right) match {
+    case (Nil, _) => right
+    case (_, Nil) => left
+    case (ltHead :: ltTail, rtHead :: rtTail) => {
+      if (ltHead < rtHead) ltHead :: merge(ltTail, right)
+      else rtHead :: merge(left, rtTail)
+    }
+  }
 
   /**
     * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -85,7 +112,12 @@ object Huffman {
     * head of the list should have the smallest weight), where the weight
     * of a leaf is the frequency of the character.
     */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs match {
+    case Nil => List()
+    case _ =>
+      val freqPairs = freqs sortWith((e1, e2) => e1._2 < e2._2)
+      freqPairs map(e1 => Leaf(e1._1, e1._2))
+  }
 
   /**
     * Checks whether the list `trees` contains only one single code tree.
@@ -104,7 +136,11 @@ object Huffman {
     * If `trees` is a list of less than two elements, that list should be returned
     * unchanged.
     */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case Nil => List()
+    case List(tree) => List(tree)
+    case left :: right :: remaining => (makeCodeTree(left, right) :: remaining) .sortWith((t1, t2) => weight(t1) < weight(t2))
+  }
 
   /**
     * This function will be called in the following way:
