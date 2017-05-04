@@ -162,8 +162,8 @@ object Huffman {
     */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
     def traverse(remaining: CodeTree, bits: List[Bit]): List[Char] = remaining match {
-      case Leaf(c, _) if bits.isEmpty => List(c)
-      case Leaf(c, _) => c :: traverse(tree, bits)
+      case Leaf(c, d) if bits.isEmpty => List(c)
+      case Leaf(c, d) => c :: traverse(tree, bits)
       case Fork(left, right, _, _) if bits.head == 0 => traverse(left, bits.tail)
       case Fork(left, right, _, _) => traverse(right, bits.tail)
     }
